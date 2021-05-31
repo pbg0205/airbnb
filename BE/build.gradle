@@ -20,6 +20,10 @@ dependencies {
     //Oauth JWT dependency
     implementation 'com.auth0:java-jwt:3.15.0'
 
+    //Spring lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
     //JDBC data starter
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     runtimeOnly 'mysql:mysql-connector-java'
