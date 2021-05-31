@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.4.5'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.32'
 }
 
 group = 'com.codsquad'
@@ -22,8 +23,22 @@ dependencies {
     //JDBC data starter
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     runtimeOnly 'mysql:mysql-connector-java'
+
+    //kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 test {
     useJUnitPlatform()
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
