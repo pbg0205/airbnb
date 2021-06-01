@@ -35,12 +35,12 @@ public class AccomodationController {
         return new ResponseEntity(accomodationService.getResponseBySearchCondition(requestDto), HttpStatus.OK);
     }
 
-    @GetMapping("/prices")
+    @GetMapping("/prices/location")
     public ResponseEntity getPrices(LocationRangeDto locationRangeDto) {
         return new ResponseEntity(accomodationService.getPricesByLocationRange(locationRangeDto), HttpStatus.OK);
     }
 
-    @GetMapping("/prices")
+    @GetMapping("/prices/period")
     public ResponseEntity getPrices(TravelRangeDto travelRangeDto) {
         return new ResponseEntity(accomodationService.getPricesByTravelRange(travelRangeDto), HttpStatus.OK);
     }
