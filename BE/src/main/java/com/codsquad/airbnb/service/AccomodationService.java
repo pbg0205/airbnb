@@ -8,6 +8,8 @@ import com.codsquad.airbnb.dto.AccomodationRequestDto;
 import com.codsquad.airbnb.dto.AccomodationResponseDto;
 import com.codsquad.airbnb.dto.LocationRangeDto;
 import com.codsquad.airbnb.dto.TravelRangeDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -17,6 +19,8 @@ import java.util.stream.Collectors;
 @Service
 public class AccomodationService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccomodationService.class);
+
     private AccomodationDao accomodationDao;
 
     public AccomodationService(AccomodationDao accomodationDao) {
@@ -24,20 +28,29 @@ public class AccomodationService {
     }
 
     public List<AccomodationResponseDto> getResponseBySearchCondition(AccomodationRequestDto requestDto) {
+        LOGGER.debug("AccomodationService.getResponseBySearchCondition");
+
         List<Accomodation> accomodationList = findAccomodationByUserRequest(requestDto);
+
+        LOGGER.debug("accomodationList : {}", accomodationList);
+
         return convertAccomodationDto(accomodationList);
     }
 
     private List<AccomodationResponseDto> convertAccomodationDto(List<Accomodation> accomodationList) {
         return accomodationList.stream().map(accomodation
                 -> {
-            Location location = findLocationByAccomodationId(accomodation.getAccomodtionId());
+            Location location = findLocationByLocationId(accomodation.getLocationId());
             List<Image> images = findImagesByAccomodationId(accomodation.getAccomodtionId());
+
+            LOGGER.debug("{}", location);
+            LOGGER.debug("{}", images);
 
             return AccomodationResponseDto.builder()
                     .id(accomodation.getAccomodtionId())
-                    .area(String.join(getArea(location)))
+                    .area(getArea(location))
                     .imageUrl(images)
+                    .accomodationName(accomodation.getAccomodationName())
                     .residentialType(accomodation.getAccomodationType())
                     .maxMemberCapacity(accomodation.getMaximumOccupancy())
                     .bedRoomCount(accomodation.getBedRoom())
@@ -61,12 +74,12 @@ public class AccomodationService {
         return accomodationDao.findImageByAccomodationId(accomodationId);
     }
 
-    private Location findLocationByAccomodationId(Long accomodationId) {
-        return accomodationDao.findLocationByAccomodationId(accomodationId);
+    private Location findLocationByLocationId(Long locationId) {
+        return accomodationDao.findLocationByLocationId(locationId);
     }
 
     private String getArea(Location location) {
-        return String.join(", ", location.getCity(), location.getRegion(), location.getCountry());
+        return String.join(",", location.getCity(), location.getRegion(), location.getCountry());
     }
 
     private List<String> parseOptions(String option) {

@@ -1,12 +1,10 @@
 package com.codsquad.airbnb.mapper;
 
 import com.codsquad.airbnb.domain.Accomodation;
-import com.codsquad.airbnb.domain.Location;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class AccomodationMapper implements RowMapper<Accomodation> {
 
@@ -14,7 +12,8 @@ public class AccomodationMapper implements RowMapper<Accomodation> {
     public Accomodation mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Accomodation.builder()
                 .accomodtionId(rs.getLong("accomodation_id"))
-                .accomodationName(rs.getString("accmodation_name"))
+                .locationId(rs.getLong("location_id"))
+                .accomodationName(rs.getString("accomodation_name"))
                 .hostName(rs.getString("host_name"))
                 .discription(rs.getString("discription"))
                 .accomodationType(rs.getString("accomodation_type"))
@@ -24,6 +23,7 @@ public class AccomodationMapper implements RowMapper<Accomodation> {
                 .bedRoom(rs.getInt("bed_room"))
                 .bathRoom(rs.getInt("bath_room"))
                 .bedCount(rs.getInt("bed_count"))
+                .option(rs.getString("option"))
                 .build();
     }
 }

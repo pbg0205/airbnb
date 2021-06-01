@@ -17,12 +17,13 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.List;
-import java.util.Optional;
 
 import static com.codesquad.airbnb.web.statement.AccomodationStatementKt.*;
 
 @Repository
 public class AccomodationDao {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccomodationDao.class);
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -47,6 +48,8 @@ public class AccomodationDao {
                 .addValue("sw_lng", requestDto.getSouthWestLongitude())
                 .addValue("ne_lng", requestDto.getNorthEastLongitude());
 
+        LOGGER.debug("parameter : {}", parameter);
+
         return namedParameterJdbcTemplate.query(SEARCH_ACCOMODATION, parameter, accomodationMapper);
     }
 
@@ -56,9 +59,11 @@ public class AccomodationDao {
         return namedParameterJdbcTemplate.query(FIND_IMAGES, parameter, imageMapper);
     }
 
-    public Location findLocationByAccomodationId(Long accomodationId) {
+    public Location findLocationByLocationId(Long locationId) {
         MapSqlParameterSource parameter = new MapSqlParameterSource();
-        parameter.addValue("accomodation_id", accomodationId);
+
+        parameter.addValue("location_id", locationId);
+
         return namedParameterJdbcTemplate.queryForObject(FIND_LOCATION, parameter, locationMapper);
     }
 

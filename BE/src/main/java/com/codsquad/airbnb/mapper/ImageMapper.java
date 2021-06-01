@@ -12,6 +12,7 @@ public class ImageMapper implements RowMapper<Image> {
     public Image mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Image.builder()
                 .imageId(rs.getLong("image_id"))
+                .accomodationId(rs.getLong("accomodation_id"))
                 .imageUrl(rs.getString("image_url"))
                 .build();
     }
