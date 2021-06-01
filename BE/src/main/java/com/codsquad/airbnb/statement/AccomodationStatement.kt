@@ -8,7 +8,17 @@ const val SEARCH_ACCOMODATION: String = """
    FROM ACCOMODATION A 
    INNER JOIN LOCATION L ON L.location_id = A.location_id 
    LEFT JOIN RESERVATION R ON A.accomodation_id = R.accomodation_id 
-   WHERE A.maximum_occupancy >= :total_people 
+   WHERE A.ACCOMODATION_ID NOT IN (
+		    SELECT R.ACCOMODATION_ID FROM RESERVATION
+		    WHERE
+			    R.check_in <= '2021-01-01' AND R.check_out > '2021-01-01'
+			OR R.check_in < '2021-12-31' AND R.check_out >= '2021-12-31'
+			OR '2021-01-01' <= R.check_in AND '2021-12-31' > R.check_in
+		)
+    A.maximum_occupancy >= :total_people 
+   AND R.check_in <= :check_in AND R.check_out > :check_in 
+    OR R.check_in < :check_out AND R.check_out >= :check_out
+    OR :check_in <= r.check_in AND :check_out > R.check_in
    AND L.latitude BETWEEN :sw_lat AND :ne_lat 
    AND L.longitude BETWEEN :sw_lng AND :ne_lng
    AND A.price BETWEEN :price_range_min AND :price_range_max; 
@@ -35,13 +45,20 @@ const val FIND_LOCATION: String = """
 const val FIND_PRICES_BY_LOCATION_RANGE: String = """
     SELECT A.price 
     FROM ACCOMODATION A 
-    INNER JOiN LOCATION L ON L.location_id = A.location_id 
-    WHERE L.latitude BETWEEN :sw_lat AND ne_lat 
-    AND L.longitude BETWEEN : sw_lng AND ne_lng;
+    INNER JOIN LOCATION L ON L.location_id = A.location_id 
+    WHERE L.latitude BETWEEN :sw_lat AND :ne_lat 
+    AND L.longitude BETWEEN :sw_lng AND :ne_lng;
 """
 
 const val FIND_PRICES_BY_TRAVEL_RANGE: String = """
     SELECT price
-    FROM ACCOMODATION
-    WHERE price BETWEEN :check_int AND :check_out;
+    FROM ACCOMODATION A
+    LEFT JOIN RESERVATION R ON A.accomodation_id = R.accomodation_id 
+    WHERE A.ACCOMODATION_ID NOT IN (
+		    SELECT R.ACCOMODATION_ID FROM RESERVATION
+		    WHERE
+			    R.check_in <= '2021-01-01' AND R.check_out > '2021-01-01'
+			OR R.check_in < '2021-12-31' AND R.check_out >= '2021-12-31'
+			OR '2021-01-01' <= R.check_in AND '2021-12-31' > R.check_in
+		)
 """

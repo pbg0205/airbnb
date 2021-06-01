@@ -42,6 +42,7 @@ public class AccomodationController {
 
     @GetMapping("/prices/period")
     public ResponseEntity getPrices(TravelRangeDto travelRangeDto) {
+        LOGGER.debug("{}", travelRangeDto);
         return new ResponseEntity(accomodationService.getPricesByTravelRange(travelRangeDto), HttpStatus.OK);
     }
 }

@@ -75,6 +75,8 @@ public class AccomodationDao {
                 .addValue("ne_lat", locationRangeDto.getNorthEastLatitude())
                 .addValue("ne_lng", locationRangeDto.getNorthEastLongitude());
 
+        LOGGER.debug("{}", parameter);
+
         return namedParameterJdbcTemplate.queryForList(FIND_PRICES_BY_LOCATION_RANGE, parameter, Integer.class);
     }
 
@@ -83,6 +85,8 @@ public class AccomodationDao {
 
         parameter.addValue("check_in", travelRangeDto.getCheckInDate())
                 .addValue("check_out", travelRangeDto.getCheckOutDate());
+
+        LOGGER.debug("{}", parameter);
 
         return namedParameterJdbcTemplate.queryForList(FIND_PRICES_BY_TRAVEL_RANGE, parameter, Integer.class);
     }
