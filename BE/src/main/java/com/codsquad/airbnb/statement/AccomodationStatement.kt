@@ -42,7 +42,7 @@ const val FIND_PRICES_BY_LOCATION_RANGE: String = """
 """
 
 const val FIND_PRICES_BY_TRAVEL_RANGE: String = """
-    SELCT price
+    SELCET price
     FROM ACCOMODATION
     WHERE price BETWEEN :check_int AND :check_out;
 """
