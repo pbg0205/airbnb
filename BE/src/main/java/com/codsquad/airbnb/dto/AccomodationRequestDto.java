@@ -1,9 +1,18 @@
 package com.codsquad.airbnb.dto;
 
+import com.codsquad.airbnb.util.LocalDateUtil;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.beans.ConstructorProperties;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
+@Getter
+@Setter
+@ToString
 public class AccomodationRequestDto {
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
@@ -27,8 +36,8 @@ public class AccomodationRequestDto {
                                   int priceRangeMin, int priceRangeMax,
                                   double northEastLatitude, double northEastLongitude,
                                   double southWestLatitude, double southWestLongitude) {
-        this.checkInDate = parseToLocalDate(checkInDate);
-        this.checkOutDate = parseToLocalDate(checkOutDate);
+        this.checkInDate = LocalDateUtil.parseToLocalDate(checkInDate);
+        this.checkOutDate = LocalDateUtil.parseToLocalDate(checkOutDate);
         this.adults = adults;
         this.children = children;
         this.infants = infants;
@@ -40,66 +49,7 @@ public class AccomodationRequestDto {
         this.southWestLongitude = southWestLongitude;
     }
 
-    private LocalDate parseToLocalDate(String dateAsString) {
-        return LocalDate.parse(dateAsString, DateTimeFormatter.ISO_DATE);
-    }
-
-    public int getPriceRangeMin() {
-        return priceRangeMin;
-    }
-
-    public int getPriceRangeMax() {
-        return priceRangeMax;
-    }
-
-    public boolean isBoundaryLatitude(AccomodationResponseDto responseDto) {
-        if (northEastLatitude < southWestLatitude) {
-            throw new RuntimeException("남서쪽 위도 > 북동쪽 위도");
-        }
-
-        return (this.southWestLatitude <= responseDto.getLatitude()) &&
-                (responseDto.getLatitude() <= this.northEastLatitude);
-    }
-
-    public boolean isBoundaryLongitude(AccomodationResponseDto responseDto) {
-        if(northEastLongitude < southWestLongitude) {
-            throw new RuntimeException("남서쪽 경도 > 북서쪽 경도");
-        }
-
-        return (this.southWestLatitude <= responseDto.getLongitude()) &&
-                (responseDto.getLongitude() <= this.northEastLatitude);
-    }
-
-    public boolean isTotalMemberCount(AccomodationResponseDto responseDto) {
-        return getTotalMemberCount() <= responseDto.getMaxMemberCapacity();
-    }
-
-    private int getTotalMemberCount() {
+    public int getTotalMemberCount() {
         return this.adults + this.children + this.infants;
-    }
-
-    public boolean isBoundaryPrice(AccomodationResponseDto responseDto) {
-        if(!responseDto.isBoundaryPrice(this)) {
-            throw new RuntimeException("가격 범위를 벗어났습니다.");
-        }
-
-        return responseDto.isBoundaryPrice(this);
-    }
-
-    @Override
-    public String toString() {
-        return "AccomodationRequestDto{" +
-                "checkInDate=" + checkInDate +
-                ", checkOutDate=" + checkOutDate +
-                ", adults=" + adults +
-                ", children=" + children +
-                ", infants=" + infants +
-                ", priceRangeMin=" + priceRangeMin +
-                ", getPriceRangeMax=" + priceRangeMax +
-                ", northEastLatitude=" + northEastLatitude +
-                ", northEastLongitude=" + northEastLongitude +
-                ", southWestLatitude=" + southWestLatitude +
-                ", southWestLongitude=" + southWestLongitude +
-                '}';
     }
 }
