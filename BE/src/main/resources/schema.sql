@@ -12,13 +12,12 @@ DROP TABLE IF EXISTS `LOCATION`;
 DROP TABLE IF EXISTS `IMAGE`;
 DROP TABLE IF EXISTS `ACCOMODATION`;
 DROP TABLE IF EXISTS `RESERVATION`;
-DROP TABLE IF EXISTS `ACCOMODATION_OPTION`;
-DROP TABLE IF EXISTS `WISH_LIST`;
+DROP TABLE IF EXISTS `WISH`;
 
 -- -----------------------------------------------------
--- Table `airbnb`.`LOCATION`
+-- Table `LOCATION`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `airbnb`.`LOCATION`
+CREATE TABLE IF NOT EXISTS `LOCATION`
 (
     `LOCATION_ID`   INT          NOT NULL AUTO_INCREMENT,
     `LOCATION_NAME` VARCHAR(500) NOT NULL,
@@ -33,9 +32,9 @@ CREATE TABLE IF NOT EXISTS `airbnb`.`LOCATION`
 
 
 -- -----------------------------------------------------
--- Table `airbnb`.`ACCOMODATION`
+-- Table `ACCOMODATION`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `airbnb`.`ACCOMODATION`
+CREATE TABLE IF NOT EXISTS `ACCOMODATION`
 (
     `ACCOMODATION_ID`   INT           NOT NULL AUTO_INCREMENT,
     `LOCATION_ID`       INT           NOT NULL,
@@ -54,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `airbnb`.`ACCOMODATION`
     INDEX               `fk_ACCOMODATION_LOCATION_idx` (`LOCATION_ID` ASC),
     CONSTRAINT `fk_ACCOMODATION_LOCATION`
         FOREIGN KEY (`LOCATION_ID`)
-            REFERENCES `airbnb`.`LOCATION` (`LOCATION_ID`)
+            REFERENCES `LOCATION` (`LOCATION_ID`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
 )
@@ -62,9 +61,9 @@ CREATE TABLE IF NOT EXISTS `airbnb`.`ACCOMODATION`
 
 
 -- -----------------------------------------------------
--- Table `airbnb`.`RESERVATION`
+-- Table `RESERVATION`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `airbnb`.`RESERVATION`
+CREATE TABLE IF NOT EXISTS `RESERVATION`
 (
     `RESERVATION_ID`  INT          NOT NULL,
     `ACCOMODATION_ID` INT          NOT NULL,
@@ -77,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `airbnb`.`RESERVATION`
     INDEX             `fk_RESERVATION_ACCOMODATION1_idx` (`ACCOMODATION_ID` ASC),
     CONSTRAINT `fk_RESERVATION_ACCOMODATION1`
         FOREIGN KEY (`ACCOMODATION_ID`)
-            REFERENCES `airbnb`.`ACCOMODATION` (`ACCOMODATION_ID`)
+            REFERENCES `ACCOMODATION` (`ACCOMODATION_ID`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
 )
@@ -85,9 +84,9 @@ CREATE TABLE IF NOT EXISTS `airbnb`.`RESERVATION`
 
 
 -- -----------------------------------------------------
--- Table `airbnb`.`IMAGE`
+-- Table `IMAGE`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `airbnb`.`IMAGE`
+CREATE TABLE IF NOT EXISTS `IMAGE`
 (
     `IMAGE_ID`        INT           NOT NULL AUTO_INCREMENT,
     `ACCOMODATION_ID` INT           NOT NULL,
@@ -96,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `airbnb`.`IMAGE`
     PRIMARY KEY (`IMAGE_ID`),
     CONSTRAINT `fk_ACCOMODATION_IMAGE_ACCOMODATION1`
         FOREIGN KEY (`ACCOMODATION_ID`)
-            REFERENCES `airbnb`.`ACCOMODATION` (`ACCOMODATION_ID`)
+            REFERENCES `ACCOMODATION` (`ACCOMODATION_ID`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
 )
@@ -104,9 +103,9 @@ CREATE TABLE IF NOT EXISTS `airbnb`.`IMAGE`
 
 
 -- -----------------------------------------------------
--- Table `airbnb`.`WISH_LIST`
+-- Table `WISH_LIST`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `airbnb`.`WISH`
+CREATE TABLE IF NOT EXISTS `WISH`
 (
     `WISH_ID`    INT          NOT NULL AUTO_INCREMENT,
     `ACCOMODATION_ID` INT          NOT NULL,
@@ -115,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `airbnb`.`WISH`
     PRIMARY KEY (`WISH_ID`),
     CONSTRAINT `fk_WISH_ACCOMODATION1`
         FOREIGN KEY (`ACCOMODATION_ID`)
-            REFERENCES `airbnb`.`ACCOMODATION` (`ACCOMODATION_ID`)
+            REFERENCES `ACCOMODATION` (`ACCOMODATION_ID`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
 )
@@ -123,9 +122,9 @@ CREATE TABLE IF NOT EXISTS `airbnb`.`WISH`
 
 
 -- -----------------------------------------------------
--- Table `airbnb`.`RESERVATION`
+-- Table `RESERVATION`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `airbnb`.`RESERVATION`
+CREATE TABLE IF NOT EXISTS `RESERVATION`
 (
     `RESERVATION_ID`  INT          NOT NULL,
     `ACCOMODATION_ID` INT          NOT NULL,
@@ -138,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `airbnb`.`RESERVATION`
     INDEX             `fk_RESERVATION_ACCOMODATION1_idx` (`ACCOMODATION_ID` ASC),
     CONSTRAINT `fk_RESERVATION_ACCOMODATION1`
         FOREIGN KEY (`ACCOMODATION_ID`)
-            REFERENCES `airbnb`.`ACCOMODATION` (`ACCOMODATION_ID`)
+            REFERENCES `ACCOMODATION` (`ACCOMODATION_ID`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
 )
