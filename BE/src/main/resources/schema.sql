@@ -1,16 +1,10 @@
 -- MySQL Workbench Forward Engineering
 
-SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+-- -----------------------------------------------------
+-- Drop table
+-- -----------------------------------------------------
+DROP SCHEMA  `airbnb`;
 
--- -----------------------------------------------------
--- Schema airbnb
--- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema airbnb
--- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `airbnb` DEFAULT CHARACTER SET utf8;
 USE `airbnb` ;
 
@@ -22,9 +16,9 @@ DROP TABLE IF EXISTS `ACCOMODATION_OPTION`;
 DROP TABLE IF EXISTS `WISH_LIST`;
 
 -- -----------------------------------------------------
--- Table `LOCATION`
+-- Table `airbnb`.`LOCATION`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `LOCATION`
+CREATE TABLE IF NOT EXISTS `airbnb`.`LOCATION`
 (
     `LOCATION_ID`   INT          NOT NULL AUTO_INCREMENT,
     `LOCATION_NAME` VARCHAR(500) NOT NULL,
@@ -34,135 +28,118 @@ CREATE TABLE IF NOT EXISTS `LOCATION`
     `LATITUDE`      DOUBLE       NOT NULL,
     `LONGITUDE`     DOUBLE       NOT NULL,
     PRIMARY KEY (`LOCATION_ID`)
-) DEFAULT CHARSET=utf8;
+)
+    DEFAULT CHARSET=utf8;
+
 
 -- -----------------------------------------------------
--- Table `IMAGE`
+-- Table `airbnb`.`ACCOMODATION`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `IMAGE`
+CREATE TABLE IF NOT EXISTS `airbnb`.`ACCOMODATION`
+(
+    `ACCOMODATION_ID`   INT           NOT NULL AUTO_INCREMENT,
+    `LOCATION_ID`       INT           NOT NULL,
+    `ACCOMODATION_NAME` VARCHAR(300)  NULL,
+    `HOST_NAME`         VARCHAR(100)  NULL,
+    `DISCRIPTION`       VARCHAR(1000) NULL,
+    `ACCOMODATION_TYPE` VARCHAR(45)   NULL,
+    `PRICE`             INT           NULL DEFAULT 0,
+    `MAXIMUM_OCCUPANCY` INT           NULL DEFAULT 0,
+    `AVERAGE_POINT`     DECIMAL(2, 1) NULL,
+    `BED_ROOM`          INT           NULL,
+    `BATH_ROOM`         INT           NULL,
+    `BED_COUNT`         INT           NULL,
+    `OPTION`            VARCHAR(200)  NULL,
+    PRIMARY KEY (`ACCOMODATION_ID`),
+    INDEX               `fk_ACCOMODATION_LOCATION_idx` (`LOCATION_ID` ASC),
+    CONSTRAINT `fk_ACCOMODATION_LOCATION`
+        FOREIGN KEY (`LOCATION_ID`)
+            REFERENCES `airbnb`.`LOCATION` (`LOCATION_ID`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION
+)
+    DEFAULT CHARSET=utf8;
+
+
+-- -----------------------------------------------------
+-- Table `airbnb`.`RESERVATION`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `airbnb`.`RESERVATION`
+(
+    `RESERVATION_ID`  INT          NOT NULL,
+    `ACCOMODATION_ID` INT          NOT NULL,
+    `TOTAL_PRICE`     INT          NULL DEFAULT 0,
+    `HEAD_COUNT`      INT          NULL DEFAULT 0,
+    `CHECK_IN`        DATETIME     NOT NULL,
+    `CHECK_OUT`       DATETIME     NOT NULL,
+    `USER_ID`         VARCHAR(200) NULL,
+    PRIMARY KEY (`RESERVATION_ID`),
+    INDEX             `fk_RESERVATION_ACCOMODATION1_idx` (`ACCOMODATION_ID` ASC),
+    CONSTRAINT `fk_RESERVATION_ACCOMODATION1`
+        FOREIGN KEY (`ACCOMODATION_ID`)
+            REFERENCES `airbnb`.`ACCOMODATION` (`ACCOMODATION_ID`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION
+)
+    DEFAULT CHARSET=utf8;
+
+
+-- -----------------------------------------------------
+-- Table `airbnb`.`IMAGE`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `airbnb`.`IMAGE`
 (
     `IMAGE_ID`        INT           NOT NULL AUTO_INCREMENT,
     `ACCOMODATION_ID` INT           NOT NULL,
     `IMAGE_URL`       VARCHAR(1000) NULL,
-    INDEX             `fk_ACCOMODATION_IMAGE_idx` (`ACCOMODATION_ID` ASC),
+    INDEX             `fk_ACCOMODATION_IMAGE_ACCOMODATION1_idx` (`ACCOMODATION_ID` ASC),
     PRIMARY KEY (`IMAGE_ID`),
-    CONSTRAINT `fk_ACCOMODATION_IMAGE`
+    CONSTRAINT `fk_ACCOMODATION_IMAGE_ACCOMODATION1`
         FOREIGN KEY (`ACCOMODATION_ID`)
-            REFERENCES `ACCOMODATION` (`ACCOMODATION_ID`)
+            REFERENCES `airbnb`.`ACCOMODATION` (`ACCOMODATION_ID`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
-) DEFAULT CHARSET=utf8;
+)
+    DEFAULT CHARSET=utf8;
 
 
 -- -----------------------------------------------------
--- Table `OPTION`
+-- Table `airbnb`.`WISH_LIST`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ACCOMODATION_OPTION`
+CREATE TABLE IF NOT EXISTS `airbnb`.`WISH`
 (
-    `OPTION_ID`           INT     NOT NULL AUTO_INCREMENT,
-    `BATH_ROOM_COUNT`     INT     NOT NULL,
-    `BED_ROOM_COUNT`      INT     NOT NULL,
-    `BED_COUNT`           INT     NOT NULL,
-    `HAS_ HAIRDRYER`      TINYINT NOT NULL DEFAULT 0,
-    `HAS_KITCHEN`         TINYINT NULL     DEFAULT 0,
-    `HAS_AIR_CONDITIONER` TINYINT NULL     DEFAULT 0,
-    PRIMARY KEY (`OPTION_ID`)
-) DEFAULT CHARSET=utf8;
-
-
--- -----------------------------------------------------
--- Table `ACCOMODATION`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ACCOMODATION`
-(
-    `ACCOMODATION_ID`   INT           NOT NULL AUTO_INCREMENT,
-    `LOCATION_ID`       INT           NOT NULL,
-    `HOST_NAME`         VARCHAR(100)  NULL,
-    `DISCRIPTION`       VARCHAR(1000) NULL,
-    `ACCOMODATION_TYPE` VARCHAR(45)   NULL,
-    `FEE`               INT           NULL DEFAULT 0,
-    `MAXIMUM_OCCUPANCY` INT           NULL,
-    `AVERAGE_POINT`     DECIMAL(2, 1) NULL,
-    `OPTION_ID`         INT           NOT NULL,
-    PRIMARY KEY (`ACCOMODATION_ID`),
-    INDEX               `fk_ACCOMODATION_LOCATION_idx` (`LOCATION_ID` ASC),
-    INDEX               `fk_ACCOMODATION_OPTION1_idx` (`OPTION_ID` ASC),
-    CONSTRAINT `fk_ACCOMODATION_LOCATION`
-        FOREIGN KEY (`LOCATION_ID`) REFERENCES `LOCATION` (`LOCATION_ID`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_ACCOMODATION_OPTION`
-        FOREIGN KEY (`OPTION_ID`) REFERENCES `ACCOMODATION_OPTION` (`OPTION_ID`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-) DEFAULT CHARSET=utf8;
-
--- -----------------------------------------------------
--- Table `RESERVATION`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `RESERVATION`
-(
-    `RESERVATION_ID`       INT          NOT NULL,
-    `ACCOMODATION_ID`      INT          NOT NULL,
-    `LOCATION_ID`          INT          NOT NULL,
-    `HEAD_COUNT`           INT          NULL DEFAULT 0,
-    `CHECK_IN`             DATETIME     NOT NULL,
-    `CHECK_OUT`            DATETIME     NOT NULL,
-    `USER_ID`              VARCHAR(200) NULL,
-    PRIMARY KEY (`RESERVATION_ID`),
---     INDEX                  `fk_RESERVATION_LOCATION2_idx` (`LOCATION_LOCATION_ID` ASC),
---     INDEX                  `fk_RESERVATION_ACCOMODATION1_idx` (`ACCOMODATION_ID` ASC),
-    CONSTRAINT `fk_RESERVATION_LOCATION`
-        FOREIGN KEY (`LOCATION_ID`) REFERENCES `LOCATION` (`LOCATION_ID`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_RESERVATION_ACCOMODATION`
-        FOREIGN KEY (`ACCOMODATION_ID`) REFERENCES `ACCOMODATION` (`ACCOMODATION_ID`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-) DEFAULT CHARSET=utf8;
-
--- -----------------------------------------------------
--- Table `WISH_LIST`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `WISH_LIST` (
-    `WISH_LIST_ID`    INT          NOT NULL AUTO_INCREMENT,
+    `WISH_ID`    INT          NOT NULL AUTO_INCREMENT,
     `ACCOMODATION_ID` INT          NOT NULL,
     `USER_ID`         VARCHAR(200) NOT NULL,
-    INDEX             `fk_WISH_LIST_ACCOMODATION_idx` (`ACCOMODATION_ID` ASC),
-    PRIMARY KEY (`WISH_LIST_ID`),
-    CONSTRAINT `fk_WISH_LIST_ACCOMODATION`
-        FOREIGN KEY (`ACCOMODATION_ID`) REFERENCES `ACCOMODATION` (`ACCOMODATION_ID`)
+    INDEX             `fk_WISH_LIST_ACCOMODATION1_idx` (`ACCOMODATION_ID` ASC),
+    PRIMARY KEY (`WISH_ID`),
+    CONSTRAINT `fk_WISH_ACCOMODATION1`
+        FOREIGN KEY (`ACCOMODATION_ID`)
+            REFERENCES `airbnb`.`ACCOMODATION` (`ACCOMODATION_ID`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
-) DEFAULT CHARSET=utf8;
+)
+    DEFAULT CHARSET=utf8;
+
 
 -- -----------------------------------------------------
--- Table `RESERVATION`
+-- Table `airbnb`.`RESERVATION`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `RESERVATION`
+CREATE TABLE IF NOT EXISTS `airbnb`.`RESERVATION`
 (
-    `RESERVATION_ID`       INT          NOT NULL,
-    `ACCOMODATION_ID`      INT          NOT NULL,
-    `LOCATION_ID`          INT          NOT NULL,
-    `FEE`                  INT          NULL DEFAULT 0,
-    `HEAD_COUNT`           INT          NULL DEFAULT 0,
-    `CHECK_IN`             DATETIME     NOT NULL,
-    `CHECK_OUT`            DATETIME     NOT NULL,
-    `USER_ID`              VARCHAR(200) NULL,
+    `RESERVATION_ID`  INT          NOT NULL,
+    `ACCOMODATION_ID` INT          NOT NULL,
+    `TOTAL_PRICE`     INT          NULL DEFAULT 0,
+    `HEAD_COUNT`      INT          NULL DEFAULT 0,
+    `CHECK_IN`        DATETIME     NOT NULL,
+    `CHECK_OUT`       DATETIME     NOT NULL,
+    `USER_ID`         VARCHAR(200) NULL,
     PRIMARY KEY (`RESERVATION_ID`),
---     INDEX                  `fk_RESERVATION_LOCATION2_idx` (`LOCATION_LOCATION_ID` ASC),
---     INDEX                  `fk_RESERVATION_ACCOMODATION1_idx` (`ACCOMODATION_ID` ASC),
-    CONSTRAINT `fk_RESERVATION_LOCATION`
-        FOREIGN KEY (`LOCATION_ID`) REFERENCES `LOCATION` (`LOCATION_ID`)
+    INDEX             `fk_RESERVATION_ACCOMODATION1_idx` (`ACCOMODATION_ID` ASC),
+    CONSTRAINT `fk_RESERVATION_ACCOMODATION1`
+        FOREIGN KEY (`ACCOMODATION_ID`)
+            REFERENCES `airbnb`.`ACCOMODATION` (`ACCOMODATION_ID`)
             ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-    CONSTRAINT `fk_RESERVATION_ACCOMODATION`
-        FOREIGN KEY (`ACCOMODATION_ID`) REFERENCES `ACCOMODATION` (`ACCOMODATION_ID`)
             ON UPDATE NO ACTION
-            ON DELETE NO ACTION
-) DEFAULT CHARSET=utf8;
-
-SET SQL_MODE = @OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;
+)
+    DEFAULT CHARSET=utf8;
